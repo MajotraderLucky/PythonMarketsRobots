@@ -2,6 +2,8 @@ from binance.client import Client
 import keys
 import time
 
+# No changed
+
 client = Client(keys.api_key, keys.api_secret)
 
 balance29_12_22 = 13.15539128

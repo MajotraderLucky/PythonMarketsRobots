@@ -11,7 +11,7 @@ startPrice = client.futures_order_book(
     symbol=symbolEth)['asks'][0][0]
 priceArr = []
 maxArr = []
-list_uniq_max_arr = []
+minArr = []
 
 while True:
     for i in range(10, 0, -1):
@@ -39,7 +39,27 @@ while True:
         priceArr.append(floatFutAskPrice)
         maxPrice = max(priceArr)
         minPrice = min(priceArr)
-
+        maxArr.append(maxPrice)
+        minArr.append(minPrice)
+        difference = maxPrice - minPrice
+        start2max = maxPrice - float(startPrice)
+        start2min = float(startPrice) - minPrice
+        upTrand = False
+        downTrand = False
+        if start2max > start2min:
+            upTrand = True
+            downTrand = False
+        elif start2max < start2min:
+            downTrand = True
+            upTrand = False
+        else:
+            downTrand = False
+            upTrand = False
+        shortFib236 = minPrice + ((maxPrice - minPrice) * 0.236)
+        shortFib382 = minPrice + ((maxPrice - minPrice) * 0.382)
+        shortFib500 = minPrice + ((maxPrice - minPrice) * 0.500)
+        shortFib618 = minPrice + ((maxPrice - minPrice) * 0.618)
+        shortFib786 = minPrice + ((maxPrice - minPrice) * 0.786)
         print(f"------------------------")
         print(f"----------spot----------")
         print(f"------------------------")
@@ -59,8 +79,20 @@ while True:
         print(f"Profit %   =", str(profitPercent) + "%")
         print(f"------------------------")
         print(f"Start price -", startPrice)
-        print(f"", priceArr)
+        print(f"PriceArr:", priceArr)
         print(f"high =", maxPrice)
         print(f"low  =", minPrice)
+        print(f"MaxArr:", maxArr[1:])
+        print(f"MinArr:", minArr[1:])
+        print(f"Difference:", difference)
+        print(f"Start to maximum:", start2max)
+        print(f"Start to minimum:", start2min)
+        print(f"Uptrand:",   upTrand)
+        print(f"Downtrand:", downTrand)
+        print(f"shortFib236:", shortFib236)
+        print(f"shortFib382:", shortFib382)
+        print(f"shortFib500", shortFib500)
+        print(f"shortFib618", shortFib618)
+        print(f"shortFib786", shortFib786)
         time.sleep(20)
         os.system("clear")
