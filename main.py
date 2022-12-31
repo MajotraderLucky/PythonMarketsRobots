@@ -55,11 +55,19 @@ while True:
         else:
             downTrand = False
             upTrand = False
+        # ---------------Fibo short setups----------------------
         shortFib236 = minPrice + ((maxPrice - minPrice) * 0.236)
         shortFib382 = minPrice + ((maxPrice - minPrice) * 0.382)
         shortFib500 = minPrice + ((maxPrice - minPrice) * 0.500)
         shortFib618 = minPrice + ((maxPrice - minPrice) * 0.618)
         shortFib786 = minPrice + ((maxPrice - minPrice) * 0.786)
+        # -----------------Fibo long setups---------------------
+        longFib236 = maxPrice - ((maxPrice - minPrice) * 0.236)
+        longFib382 = maxPrice - ((maxPrice - minPrice) * 0.382)
+        longFib500 = maxPrice - ((maxPrice - minPrice) * 0.500)
+        longFib618 = maxPrice - ((maxPrice - minPrice) * 0.618)
+        longFib786 = maxPrice - ((maxPrice - minPrice) * 0.786)
+        # ------------------------------------------------------
         print(f"------------------------")
         print(f"----------spot----------")
         print(f"------------------------")
@@ -91,8 +99,14 @@ while True:
         print(f"Downtrand:", downTrand)
         print(f"shortFib236:", shortFib236)
         print(f"shortFib382:", shortFib382)
-        print(f"shortFib500", shortFib500)
-        print(f"shortFib618", shortFib618)
-        print(f"shortFib786", shortFib786)
+        print(f"shortFib500:", shortFib500)
+        print(f"shortFib618:", shortFib618)
+        print(f"shortFib786:", shortFib786)
+        print(f"------------------------")
+        print(f"longFib236: ", longFib236)
+        print(f"longFib382: ", longFib382)
+        print(f"longFib500: ", longFib500)
+        print(f"longFib618: ", longFib618)
+        print(f"longFib786: ", longFib786)
         time.sleep(20)
         os.system("clear")
