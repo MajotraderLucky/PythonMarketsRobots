@@ -41,9 +41,9 @@ while True:
         minPrice = min(priceArr)
         maxArr.append(maxPrice)
         minArr.append(minPrice)
-        difference = maxPrice - minPrice
-        start2max = maxPrice - float(startPrice)
-        start2min = float(startPrice) - minPrice
+        difference = round((maxPrice - minPrice), 2)
+        start2max = round((maxPrice - float(startPrice)), 2)
+        start2min = round((float(startPrice) - minPrice), 2)
         upTrand = False
         downTrand = False
         if start2max > start2min:
@@ -68,6 +68,12 @@ while True:
         longFib618 = maxPrice - ((maxPrice - minPrice) * 0.618)
         longFib786 = maxPrice - ((maxPrice - minPrice) * 0.786)
         # ------------------------------------------------------
+        howManyOpenOrders = len(client.futures_get_open_orders())
+        setupForLong = upTrand == True and downTrand == False and start2max > 0.5 and howManyOpenOrders == 0
+        setupForShort = downTrand == True and upTrand == False and start2min > 0.5 and howManyOpenOrders == 0
+        # orderInfo = client.futures_get_open_orders(symbol=symbolEth)[
+        #     0]['price']
+        allOpenOrders = len(client.futures_get_open_orders())
         print(f"------------------------")
         print(f"----------spot----------")
         print(f"------------------------")
@@ -103,10 +109,46 @@ while True:
         print(f"shortFib618:", shortFib618)
         print(f"shortFib786:", shortFib786)
         print(f"------------------------")
-        print(f"longFib236: ", longFib236)
+        print(f"longFib236: ", round(longFib236, 2))
         print(f"longFib382: ", longFib382)
         print(f"longFib500: ", longFib500)
         print(f"longFib618: ", longFib618)
         print(f"longFib786: ", longFib786)
+        print(f"------------------------")
+        print(f"All open wait orders:", allOpenOrders)
+        # Open position
+        startFib382Pos = longFib382
+        if setupForLong == True:
+            openLongLimit = client.futures_create_order(
+                symbol=symbolEth,
+                side="BUY",
+                type="LIMIT",
+                quantity=0.01,
+                price=round(longFib382, 2),
+                timeInForce="GTC")
+            stopLossLongPos = client.futures_create_order(
+                symbol=symbolEth,
+                side="SELL",
+                type="STOP_MARKET",
+                stopPrice=str(minPrice),
+                closePosition="true")
+            if len(client.futures_get_open_orders()) == 2:
+                print(f"created buy order:", client.futures_get_open_orders())
+        elif setupForShort == True:
+            openShortLimit = client.futures_create_order(
+                symbol=symbolEth,
+                side="SELL",
+                type="LIMIT",
+                quantity=0.01,
+                price=round(shortFib382, 2),
+                timeInForce="GTC")
+            stopLossShortPos = client.futures_create_order(
+                symbol=symbolEth,
+                side="BUY",
+                type="STOP_MARKET",
+                stopPrice=str(maxPrice),
+                closePosition="true"
+            )
+
         time.sleep(20)
         os.system("clear")
