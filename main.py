@@ -103,7 +103,7 @@ while True:
         print(f"Start to minimum:", start2min)
         print(f"Uptrand:",   upTrand)
         print(f"Downtrand:", downTrand)
-        print(f"shortFib236:", shortFib236)
+        print(f"shortFib236:", round(shortFib236, 2))
         print(f"shortFib382:", shortFib382)
         print(f"shortFib500:", shortFib500)
         print(f"shortFib618:", shortFib618)
@@ -116,6 +116,11 @@ while True:
         print(f"longFib786: ", longFib786)
         print(f"------------------------")
         print(f"All open wait orders:", allOpenOrders)
+        if len(maxArr) > 10 and len(minArr) > 10:
+            if maxArr[-1] > maxArr[-2]:
+                print(f"new high", maxArr[-1])
+            elif minArr[-1] < minArr[-2]:
+                print(f"new low", minArr[-1])
         # Open position
         startFib382Pos = longFib382
         if setupForLong == True:
@@ -132,13 +137,13 @@ while True:
                 type="STOP_MARKET",
                 stopPrice=str(minPrice),
                 closePosition="true")
-            takeBuyLimit = client.futures_create_order(
+            takeBuyMarket = client.futures_create_order(
                 symbol=symbolEth,
                 side="SELL",
-                type="LIMIT",
-                quantity=0.01,
-                price=round(longFib236, 2),
-                timeInForce="GTC")
+                type="TAKE_PROFIT_MARKET",
+                stopPrice=str(maxPrice + 1),
+                closePosition="true")
+
         elif setupForShort == True:
             openShortLimit = client.futures_create_order(
                 symbol=symbolEth,
@@ -154,23 +159,23 @@ while True:
                 stopPrice=str(maxPrice),
                 closePosition="true"
             )
-            takeSellLimit = client.futures_create_order(
+            takeSellMarket = client.futures_create_order(
                 symbol=symbolEth,
-                side="BUY",
-                type="LIMIT",
-                quantity=0.01,
-                price=round(shortFib236, 2),
-                timeInForce="GTC")
-        if len(client.futures_get_open_orders()) == 2:
-            order1 = client.futures_get_open_orders()[0]['price']
-            order2 = client.futures_get_open_orders()[1]['price']
-            sideOrder1 = client.futures_get_open_orders()[0]['side']
-            sideOrder2 = client.futures_get_open_orders()[1]['side']
-            print(f"Price order #1:", order1)
-            print(f"Price order #2:", order2)
-            print(f"Side order #1:", sideOrder1)
-            print(f"Side order #2:", sideOrder2)
-            if order1 > order2:
-                print(f"order1 is a limit:", order1)
+                side="SELL",
+                type="TAKE_PROFIT_MARKET",
+                stopPrice=str(minPrice - 1),
+                closePosition="true")
+
+        # if len(client.futures_get_open_orders()) == 2:
+        #     order1 = client.futures_get_open_orders()[0]['price']
+        #     order2 = client.futures_get_open_orders()[1]['price']
+        #     sideOrder1 = client.futures_get_open_orders()[0]['side']
+        #     sideOrder2 = client.futures_get_open_orders()[1]['side']
+        #     print(f"Price order #1:", order1)
+        #     print(f"Price order #2:", order2)
+        #     print(f"Side order #1:", sideOrder1)
+        #     print(f"Side order #2:", sideOrder2)
+        #     if order1 > order2:
+        #         print(f"order1 is a limit:", order1)
         time.sleep(20)
         os.system("clear")
