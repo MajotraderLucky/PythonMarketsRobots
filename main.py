@@ -71,8 +71,6 @@ while True:
         howManyOpenOrders = len(client.futures_get_open_orders())
         setupForLong = upTrand == True and downTrand == False and start2max > 1 and howManyOpenOrders == 0
         setupForShort = downTrand == True and upTrand == False and start2min > 1 and howManyOpenOrders == 0
-        # orderInfo = client.futures_get_open_orders(symbol=symbolEth)[
-        #     0]['price']
         allOpenOrders = len(client.futures_get_open_orders())
         print(f"------------------------")
         print(f"----------spot----------")
@@ -141,7 +139,7 @@ while True:
                 symbol=symbolEth,
                 side="SELL",
                 type="TAKE_PROFIT_MARKET",
-                stopPrice=str(maxPrice + 1),
+                stopPrice=str(maxPrice + 0.5),
                 closePosition="true")
 
         elif setupForShort == True:
@@ -163,19 +161,10 @@ while True:
                 symbol=symbolEth,
                 side="SELL",
                 type="TAKE_PROFIT_MARKET",
-                stopPrice=str(minPrice - 1),
+                stopPrice=str(minPrice - 0.5),
                 closePosition="true")
-
-        # if len(client.futures_get_open_orders()) == 2:
-        #     order1 = client.futures_get_open_orders()[0]['price']
-        #     order2 = client.futures_get_open_orders()[1]['price']
-        #     sideOrder1 = client.futures_get_open_orders()[0]['side']
-        #     sideOrder2 = client.futures_get_open_orders()[1]['side']
-        #     print(f"Price order #1:", order1)
-        #     print(f"Price order #2:", order2)
-        #     print(f"Side order #1:", sideOrder1)
-        #     print(f"Side order #2:", sideOrder2)
-        #     if order1 > order2:
-        #         print(f"order1 is a limit:", order1)
+        changeSetupOrders = (setupForLong == True or setupForShort == True) and allOpenOrders == 3
+        if changeSetupOrders == True:
+            print(f"The condition for the permutation opening orders is met.")
         time.sleep(20)
         os.system("clear")
