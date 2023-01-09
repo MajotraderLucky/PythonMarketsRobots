@@ -118,6 +118,8 @@ while True:
         print(f"float open positions:", floatSizeOpenPositions)
         conditionCreateStopLossOrder = len(priceArr) > 5 and allOpenOrders == 0
         stopLossBuyInfo = False
+        conditionOpenLongPosition = (
+            setupForLong == True) and floatSizeOpenPositions == 0.0 and len(priceArr) > 10
         if conditionCreateStopLossOrder == True:
             stopLossBuy = client.futures_create_order(
                 symbol=symbolEth,
@@ -127,5 +129,17 @@ while True:
                 closePosition="true"
             )
             stopLossBuyInfo = True
+
+        if conditionOpenLongPosition == True and priceArr[-1] > priceLong382:
+            openLongLimit = client.futures_create_order(
+                symbol=symbolEth,
+                side="BUY",
+                type="LIMIT",
+                quantity=0.01,
+                timeInForce="GTC"
+            )
+        print(f"priceArr[-1] =", priceArr[-1], type(priceArr[-1]))
+        print(f"priceLong382 =", priceLong382, type(priceLong382))
+
         time.sleep(20)
         os.system("clear")
