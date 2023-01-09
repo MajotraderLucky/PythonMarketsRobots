@@ -111,9 +111,35 @@ while True:
         strPrice236 = str(priceLong236)
         priceLong382 = round(longFib382, 2)
         strPrice382 = str(priceLong382)
-        sizeOpenPosition = next(obj for obj in client.futures_account()['positions'] if obj['symbol'] == symbolEth)['positionAmt']
+        sizeOpenPosition = next(obj for obj in client.futures_account()[
+                                'positions'] if obj['symbol'] == symbolEth)['positionAmt']
         floatSizeOpenPositions = float(sizeOpenPosition)
-        print(f"Size open positions", sizeOpenPosition, type(sizeOpenPosition))
-        print(f"float open positions:", floatSizeOpenPositions, type(floatSizeOpenPositions))
+        print(f"Size open positions", sizeOpenPosition)
+        print(f"float open positions:", floatSizeOpenPositions)
+        conditionCreateStopLossOrder = len(priceArr) > 5 and allOpenOrders == 0
+        stopLossBuyInfo = False
+        conditionOpenLongPosition = (
+            setupForLong == True) and floatSizeOpenPositions == 0.0 and len(priceArr) > 10
+        if conditionCreateStopLossOrder == True:
+            stopLossBuy = client.futures_create_order(
+                symbol=symbolEth,
+                side="SELL",
+                type="STOP_MARKET",
+                stopPrice=str(minPrice - 0.5),
+                closePosition="true"
+            )
+            stopLossBuyInfo = True
+
+        if conditionOpenLongPosition == True and priceArr[-1] > priceLong382:
+            openLongLimit = client.futures_create_order(
+                symbol=symbolEth,
+                side="BUY",
+                type="LIMIT",
+                quantity=0.01,
+                timeInForce="GTC"
+            )
+        print(f"priceArr[-1] =", priceArr[-1], type(priceArr[-1]))
+        print(f"priceLong382 =", priceLong382, type(priceLong382))
+
         time.sleep(20)
         os.system("clear")
