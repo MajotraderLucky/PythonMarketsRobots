@@ -136,6 +136,7 @@ while True:
                 side="BUY",
                 type="LIMIT",
                 quantity=0.01,
+                price=strPrice382,
                 timeInForce="GTC"
             )
         print(f"priceArr[-1] =", priceArr[-1], type(priceArr[-1]))
