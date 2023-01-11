@@ -1,3 +1,5 @@
+import sys
+
 from binance.client import Client
 import keys
 import time
@@ -119,8 +121,8 @@ while True:
         conditionCreateStopLossOrder = len(priceArr) > 5 and allOpenOrders == 0
         stopLossBuyInfo = False
         conditionOpenLongPosition = (
-            setupForLong == True) and floatSizeOpenPositions == 0.0 and len(priceArr) > 10
-        if conditionCreateStopLossOrder == True:
+            setupForLong == True) and floatSizeOpenPositions == 0.0 and len(priceArr) > 10 and allOpenOrders == 1
+        if conditionCreateStopLossOrder:
             stopLossBuy = client.futures_create_order(
                 symbol=symbolEth,
                 side="SELL",
@@ -139,8 +141,18 @@ while True:
                 price=strPrice382,
                 timeInForce="GTC"
             )
-        print(f"priceArr[-1] =", priceArr[-1], type(priceArr[-1]))
-        print(f"priceLong382 =", priceLong382, type(priceLong382))
-
+        conditionTakeProfitLong = floatSizeOpenPositions > 0.0 and allOpenOrders == 1
+        if conditionTakeProfitLong:
+            takeBuyMarket = client.futures_create_order(
+                symbol=symbolEth,
+                side="SELL",
+                type="TAKE_PROFIT_MARKET",
+                stopPrice=str(maxPrice + 0.5),
+                closePosition="true")
+        print(f"Quantity elements priceArr:", len(priceArr))
+        conditionRestart = len(priceArr) > 1000 and floatSizeOpenPositions == 0.0
+        if conditionRestart:
+            client.futures_cancel_all_open_orders(symbol=symbolEth)
+            os.execv(sys.executable, [sys.executable] + sys.argv)
         time.sleep(20)
         os.system("clear")
