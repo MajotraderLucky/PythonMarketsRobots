@@ -84,11 +84,11 @@ while True:
         print(f"Profit %   =", str(profitPercent) + "%")
         print(f"------------------------")
         print(f"Start price -", startPrice)
-        print(f"PriceArr:", priceArr)
+        # print(f"PriceArr:", priceArr)
         print(f"high =", maxPrice)
         print(f"low  =", minPrice)
-        print(f"MaxArr:", maxArr[1:])
-        print(f"MinArr:", minArr[1:])
+        # print(f"MaxArr:", maxArr[1:])
+        # print(f"MinArr:", minArr[1:])
         print(f"Difference:", difference)
         print(f"Start to maximum:", start2max)
         print(f"Start to minimum:", start2min)
@@ -130,6 +130,8 @@ while True:
         newLow = (len(maxArr) > 10 and len(minArr) >
                   10) and minArr[-1] < minArr[-2]
         newExtreme = newHigh == True or newLow == True
+        priceLongOpenPosition = 0.0
+        priceShortOpenPosition = 0.0
         if conditionOpenLongPosition:
             if priceArr[-1] > priceLong382 and floatSizeOpenPositions == 0.0 and allOpenOrders == 0:
                 openLongLimit = client.futures_create_order(
@@ -140,6 +142,7 @@ while True:
                     price=strPrice382,
                     timeInForce="GTC"
                 )
+                priceLongOpenPosition = priceLong382
             if allOpenOrders == 0 and floatSizeOpenPositions > 0.0:
                 stopLossBuy = client.futures_create_order(
                     symbol=symbolEth,
@@ -166,6 +169,7 @@ while True:
                     price=strPriceShort382,
                     timeInForce="GTC"
                 )
+                priceShortOpenPosition = priceShort382
             if allOpenOrders == 0 and floatSizeOpenPositions < 0.0:
                 stopLossSell = client.futures_create_order(
                     symbol=symbolEth,
@@ -182,7 +186,7 @@ while True:
                     stopPrice=str(minPrice - 0.5),
                     closePosition="true"
                 )
-        if newExtreme and floatSizeOpenPositions == 0.0:
+        if newExtreme and floatSizeOpenPositions == 0:
             client.futures_cancel_all_open_orders(symbol=symbolEth)
         print(f"Quantity elements priceArr:", len(priceArr))
         conditionRestart = len(
@@ -190,5 +194,7 @@ while True:
         if conditionRestart:
             client.futures_cancel_all_open_orders(symbol=symbolEth)
             os.execv(sys.executable, [sys.executable] + sys.argv)
+        print(f"Price open long position:", priceLongOpenPosition)
+        print(f"Price open short position:", priceShortOpenPosition)
         time.sleep(20)
         os.system("clear")
