@@ -69,9 +69,9 @@ while True:
         longFib786 = maxPrice - ((maxPrice - minPrice) * 0.786)
         # ------------------------------------------------------
         howManyOpenOrders = len(client.futures_get_open_orders())
-        setupForLong = upTrand == True and downTrand == False and start2max > 0.5
-        setupForShort = downTrand == True and upTrand == False and start2min > 0.5
-        allOpenOrders = len(client.futures_get_open_orders())
+        setupForLong = upTrand == True and downTrand == False and start2max > 5
+        setupForShort = downTrand == True and upTrand == False and start2min > 5
+        allOpenOrders = len(client.futures_get_open_orders(symbol=symbolEth))
         print(f"------------------------")
         print(f"---------futures--------")
         print(f"------------------------")
@@ -194,7 +194,5 @@ while True:
         if conditionRestart:
             client.futures_cancel_all_open_orders(symbol=symbolEth)
             os.execv(sys.executable, [sys.executable] + sys.argv)
-        print(f"Price open long position:", priceLongOpenPosition)
-        print(f"Price open short position:", priceShortOpenPosition)
         time.sleep(20)
         os.system("clear")
