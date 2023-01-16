@@ -116,6 +116,14 @@ while True:
         strPrice382 = str(priceLong382)
         priceShort382 = round(shortFib382, 1)
         strPriceShort382 = str(priceShort382)
+        priceLong786 = round(longFib786, 1)
+        strPriceLong786 = str(priceLong786)
+        priceShort786 = round(shortFib786, 1)
+        strPriceShort786 = str(priceShort786)
+        priceLong618 = round(longFib618, 1)
+        strPriceLong618 = str(priceLong618)
+        priceShort618 = round(shortFib618, 1)
+        strPriceShort618 = str(priceShort618)
         sizeOpenPosition = next(obj for obj in client.futures_account()[
                                 'positions'] if obj['symbol'] == symbolBTC)['positionAmt']
         floatSizeOpenPositions = float(sizeOpenPosition)
@@ -160,6 +168,15 @@ while True:
                     stopPrice=str(maxPrice + 5),
                     closePosition="true"
                 )
+            elif priceArr[-1] > priceLong618 and floatSizeOpenPositions == 0.001 and allOpenOrders == 2:
+                openLongLimit = client.futures_create_order(
+                    symbol=symbolBTC,
+                    side="BUY",
+                    type="LIMIT",
+                    quantity=0.001,
+                    price=strPriceLong618,
+                    timeInForce="GTC"
+                )
         elif conditonOpenShortPositon:
             if priceArr[-1] < priceShort382 and floatSizeOpenPositions == 0.0 and allOpenOrders == 0:
                 openShortLimit = client.futures_create_order(
@@ -186,6 +203,15 @@ while True:
                     type="TAKE_PROFIT_MARKET",
                     stopPrice=str(minPrice - 5),
                     closePosition="true"
+                )
+            elif priceArr[-1] < priceShort618 and floatSizeOpenPositions == 0.001 and allOpenOrders == 2:
+                openShortLimit = client.futures_create_order(
+                    symbol=symbolBTC,
+                    side="SELL",
+                    type="LIMIT",
+                    quantity=0.001,
+                    price=strPriceShort618,
+                    timeInForce="GTC"
                 )
         if newExtreme and floatSizeOpenPositions == 0:
             client.futures_cancel_all_open_orders(symbol=symbolBTC)
