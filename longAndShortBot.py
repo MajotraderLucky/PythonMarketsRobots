@@ -119,6 +119,8 @@ while True:
         strPriceLong618 = str(priceLong618)
         priceShort618 = round(shortFib618, 2)
         strPriceShort618 = str(priceShort618)
+        priceShort236 = round(shortFib236, 2)
+        strPriceShort236 = str(priceShort236)
         sizeOpenPosition = next(obj for obj in client.futures_account()[
                                 'positions'] if obj['symbol'] == symbolEth)['positionAmt']
         floatSizeOpenPositions = float(sizeOpenPosition)
@@ -172,6 +174,14 @@ while True:
                     price=strPriceLong618,
                     timeInForce="GTC"
                 )
+            elif priceArr[-1] < priceLong382 and floatSizeOpenPositions == 0.02 and allOpenOrders == 2:
+                takeBuyLimit = client.futures_create_order(
+                    symbol=symbolEth,
+                    side="SELL",
+                    type="TAKE_PROFIT_MARKET",
+                    stopPrice=strPrice236,
+                    closePosition="true"
+                )
         elif conditonOpenShortPositon:
             if priceArr[-1] < priceShort382 and floatSizeOpenPositions == 0.0 and allOpenOrders == 0:
                 openShortLimit = client.futures_create_order(
@@ -207,6 +217,14 @@ while True:
                     quantity=0.01,
                     price=strPriceShort618,
                     timeInForce="GTC"
+                )
+            elif priceArr[-1] > priceShort382 and floatSizeOpenPositions == 0.02 and allOpenOrders == 2:
+                takeSellLimit = client.futures_create_order(
+                    symbol=symbolEth,
+                    side="BUY",
+                    type="TAKE_PROFIT_MARKET",
+                    stopPrice=strPriceShort236,
+                    closePosition="true"
                 )
         if newExtreme and floatSizeOpenPositions == 0:
             client.futures_cancel_all_open_orders(symbol=symbolEth)
